@@ -10,6 +10,7 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "users"
     user_id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    name = Column(String, nullable=False)
     email = Column(String, nullable=False)
     password = Column(String, nullable=False)
     user_type = Column(String, nullable=False)
@@ -32,7 +33,7 @@ class UserImage(Base):
 class Professional(Base):
     __tablename__ = 'professionals'
     professional_id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    name = Column(String, nullable=False)
+    # name = Column(String, nullable=False)
     gender = Column(String, nullable=False)
     intern_status = Column(Boolean, nullable=False)
     current_position = Column(String, nullable=False)
@@ -52,7 +53,7 @@ class Professional(Base):
 class Patient(Base):
     __tablename__ = 'patients'
     patient_id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, nullable=False)
+    # name = Column(String, nullable=False)
     address = Column(String, nullable=False)
     phone_no = Column(String, nullable=False)
 
@@ -64,11 +65,13 @@ class Patient(Base):
 class Qualification(Base):
     __tablename__ = 'qualification'
     qualification_id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    degree = Column(String, nullable=False)
-    college = Column(String, nullable=False)
-    grade = Column(String, nullable=False)
-    start_date = Column(Date, nullable=False)
-    completion_date = Column(Date, nullable=False)
+    # degree = Column(String, nullable=False)
+    # college = Column(String, nullable=False)
+    # grade = Column(String, nullable=False)
+    # start_date = Column(Date, nullable=False)
+    # completion_date = Column(Date, nullable=False)
+    
+    qualification = Column(String, nullable=False)
 
     professional_id = Column(Integer, ForeignKey('professionals.professional_id'), nullable=False)
     professional = relationship("Professional", back_populates="qualifications")
@@ -76,19 +79,19 @@ class Qualification(Base):
 class Experience(Base):
     __tablename__='experience'
     experience_id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    company = Column(String, nullable=False)
-    role = Column(String, nullable=False)
-    description = Column(String, nullable=False)
-    start_date = Column(Date, nullable=False)
-    end_date = Column(Date, nullable=False)
-
+    # company = Column(String, nullable=False)
+    # role = Column(String, nullable=False)
+    # description = Column(String, nullable=False)
+    # start_date = Column(Date, nullable=False)
+    # end_date = Column(Date, nullable=False)
+    experience = Column(String, nullable=False)
     professional_id = Column(Integer, ForeignKey('professionals.professional_id'), nullable=False)
     professional = relationship("Professional", back_populates="experience")
 
 class Organization(Base):
     __tablename__ = 'organization'
     organization_id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, nullable=False)
+    # name = Column(String, nullable=False)
     org_type = Column(String, nullable=False)
     phone_no = Column(String, nullable=False)
     address = Column(String, nullable=False)
@@ -156,3 +159,6 @@ class Follow(Base):
     professional_id = Column(Integer, ForeignKey('professionals.professional_id'), nullable=False)
     professional = relationship("Professional", back_populates="followed")
     date = Column(Date, default=date.today, nullable=False)
+
+
+# alembic revision --autogenerate -m "update tables"

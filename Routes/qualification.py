@@ -26,15 +26,16 @@ async def addQualification(qualification : schema.qualification, db: Session = D
 # allemployees
 @router.get('/qualification/{id}', response_model=schema.qualificationOut, status_code=status.HTTP_200_OK, tags=['Qualification'])
 async def getQualification(id : int, db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
-    try:
-        # if current_user.user_type == 'organization':
+    if current_user.user_type.lower() == 'nurse' or current_user.user_type.lower() == 'doctor':
         qualification = db.query(models.Qualification).filter(models.Qualification.qualification_id == id).first()
+        if not qualification:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Qualification with ID {id} does not exist")
+        
         return qualification
-        # else:
-        #  raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You have no access to perform this action") 
+    else:
+         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You have no access to perform this action") 
 
-    except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+
 
 
 #response_model=schema.employeesOut,

@@ -172,7 +172,6 @@ async def searchProfessional(keyword : schema.searchAPI, db: Session = Depends(g
         for professional in professionals:
             professional_out = schema.professionalOut(
                 professional_id=professional.professional_id,
-                name=professional.name,
                 gender=professional.gender,
                 intern_status=professional.intern_status,
                 current_position=professional.current_position,
@@ -181,27 +180,30 @@ async def searchProfessional(keyword : schema.searchAPI, db: Session = Depends(g
                 registeration_no = professional.registeration_no,
                 user=schema.userOut(
                     user_id=professional.user.user_id,
+                    name = professional.user.name,
                     email = professional.user.email,
                     user_type = professional.user.user_type
                     ),
                 qualification=[
                     schema.qualificationInfo(
                         qualification_id=qualification.qualification_id,
-                        degree=qualification.degree,
-                        college=qualification.college,
-                        grade=qualification.grade,
-                        start_date=qualification.start_date,
-                        completion_date=qualification.completion_date,
+                        qualification = qualification.qualification,
+                        # degree=qualification.degree,
+                        # college=qualification.college,
+                        # grade=qualification.grade,
+                        # start_date=qualification.start_date,
+                        # completion_date=qualification.completion_date,
                     ) for qualification in professional.qualifications
                 ],
                 experience=[
                     schema.experienceInfo(
                         experience_id=experience.experience_id,
-                        company=experience.company,
-                        role=experience.role,
-                        description=experience.description,
-                        start_date=experience.start_date,
-                        end_date=experience.end_date,
+                        experience = experience.experience
+                        # company=experience.company,
+                        # role=experience.role,
+                        # description=experience.description,
+                        # start_date=experience.start_date,
+                        # end_date=experience.end_date,
                     ) for experience in professional.experience
                 ],
             )

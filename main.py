@@ -4,7 +4,21 @@ from db import engine ,get_db
 from sqlalchemy.orm import Session
 from Routes import Auth
 from Routes import user, Auth, organization, org_posts,employee, professional, qualification, experience, application,followers, patient, reviews
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+
+# CORS configuration
+origins = ["*"]  # Allows all origins
+
+# Add middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods (e.g., GET, POST, PUT, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
 
 models.Base.metadata.create_all(bind= engine)
 

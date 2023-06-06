@@ -18,6 +18,7 @@ class userImageOut(userImage):
 
 
 class User(BaseModel):
+    name : str
     email : EmailStr
     user_type : str 
 
@@ -38,11 +39,12 @@ class delteUser(BaseModel):
     id : int
 
 class qualification(BaseModel):
-    degree : str 
-    college : str 
-    grade : str 
-    start_date : date
-    completion_date : date
+    # degree : str 
+    # college : str 
+    # grade : str 
+    # start_date : date
+    # completion_date : date
+    qualification : str 
 
 class qualificationInfo(qualification):
     qualification_id : int 
@@ -52,11 +54,12 @@ class qualificationInfo(qualification):
 
 
 class experience(BaseModel):
-    company : str 
-    role : str 
-    description : str 
-    start_date : date
-    end_date : date
+    # company : str 
+    # role : str 
+    # description : str 
+    # start_date : date
+    # end_date : date
+    experience : str 
 
 class experienceInfo(experience):
     experience_id : int 
@@ -66,7 +69,6 @@ class experienceInfo(experience):
 
 
 class professional(BaseModel):
-    name : str 
     gender : str 
     intern_status : bool 
     current_position : str 
@@ -113,7 +115,6 @@ class professionalOut(professionalInfo):
 
 
 class organization(BaseModel):
-    name : str 
     org_type : str 
     phone_no : str 
     address : str 
