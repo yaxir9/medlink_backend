@@ -26,6 +26,7 @@ models.Base.metadata.create_all(bind= engine)
 def Hello():
     return {"Message" : "Hello Wrold"}
 
+# git commit -m "update experience and qualification models v2"
 
 
 app.include_router(user.router)

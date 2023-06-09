@@ -12,6 +12,9 @@ async def create_Post(post : schema.post,  db: Session = Depends(get_db), curren
     try:
         if current_user.user_type == 'organization':
             org = db.query(models.Organization).filter(models.Organization.user_id == current_user.user_id).first()
+            # pri
+            # print("org id : ",org.organization_id)
+
             # print(org)
             new_post = models.Post(**post.dict(), organization_id = org.organization_id)
             db.add(new_post)            
@@ -40,17 +43,16 @@ async def getPost(id : int,  db: Session = Depends(get_db), current_user: int = 
 # org all post
 @router.get('/posts/', response_model= List[schema.postOut], status_code=status.HTTP_200_OK, tags=['Org_Posts'])
 async def orgPosts(db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
-    if current_user.user_type.lower() == 'nurse' or current_user.user_type.lower() == 'doctor':
-    
+    # if current_user.user_type.lower() == 'nurse' or current_user.user_type.lower() == 'doctor':
+        
         org = db.query(models.Organization).filter(models.Organization.user_id == current_user.user_id).first()
-
         if org:
             posts = db.query(models.Post).filter(models.Post.organization_id == org.organization_id).all()
             if not posts:
                 raise HTTPException(status_code= status.HTTP_404_NOT_FOUND , detail= f"post at this {id} dose not exist")
             return posts 
-    else:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You have no access to perform this action")
+    # else:
+        # raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You have no access to perform this action")
 # get all posts
 @router.get('/allposts/', response_model= List[schema.postOut], status_code=status.HTTP_200_OK, tags=['Org_Posts'])
 async def getAllPosts(db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
