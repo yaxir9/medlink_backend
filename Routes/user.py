@@ -5,11 +5,12 @@ from db import  get_db
 from sqlalchemy.orm import Session
 from pathlib import Path
 import os
+from fastapi.responses import FileResponse
 
 
 router = APIRouter()
-
-@router.post('/create_user' , status_code=status.HTTP_201_CREATED, response_model=schema.userOut, tags=["User"] )
+# response_model=schema.userOut,
+@router.post('/create_user' , status_code=status.HTTP_201_CREATED,  tags=["User"], response_model=schema.userOut_with_Token)
 def create_user( user : schema.UserCreate, db : Session = Depends(get_db)):
     try:
         print("Create User.")
@@ -20,7 +21,19 @@ def create_user( user : schema.UserCreate, db : Session = Depends(get_db)):
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
-        return new_user
+        ret_user = db.query(models.User).filter(models.User.email == user.email).first()
+        access_token =  Oauth2.create_access_token(data = {"user_id" : ret_user.user_id })
+        print("User Created : ",access_token)
+        # user_info = {"user" : new_user, "Login" : {"access_token":access_token , "token_type" : "Barear", "user_type" : user.user_type}}
+        user_info = schema.userOut_with_Token(
+            **user.dict(),
+            user_id = new_user.user_id,
+            access_token=access_token,
+            token_type="Bearer",
+            # user_type=user.user_type
+        )
+        return user_info
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))# all employees
 
@@ -154,9 +167,9 @@ async def get_user(id : int , db : Session = Depends(get_db),current_user : int 
 
 
 # ############################
-
-@router.get("/getUserImage/{filename}", status_code=status.HTTP_200_OK, tags=['User'])
-async def get_user_image(filename: str, current_user : int = Depends(Oauth2.get_current_user)):
+#  current_user : int = Depends(Oauth2.get_current_user)
+@router.get("/getUserImage/", status_code=status.HTTP_200_OK, tags=['User'])
+async def get_user_image(filename: str):
     try:
         print("filename",filename)
         return FileResponse(filename)

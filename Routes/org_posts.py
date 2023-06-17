@@ -10,7 +10,7 @@ router = APIRouter()
 @router.post('/create_posts',response_model=schema.postOut, status_code=status.HTTP_201_CREATED, tags=['Org_Posts'])
 async def create_Post(post : schema.post,  db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
     try:
-        if current_user.user_type == 'organization':
+        if current_user.user_type.lower() == 'organization':
             org = db.query(models.Organization).filter(models.Organization.user_id == current_user.user_id).first()
             # pri
             # print("org id : ",org.organization_id)
@@ -69,7 +69,7 @@ async def getAllPosts(db: Session = Depends(get_db), current_user: int = Depends
 # delete post
 @router.delete('/deletepost/', response_model= schema.postOut, status_code=status.HTTP_200_OK, tags=['Org_Posts'])
 async def deletePost(del_post : schema.deletePost, db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
-        if current_user.user_type == 'organization':
+        if current_user.user_type.lower() == 'organization':
             post = db.query(models.Post).filter(models.Post.post_id == del_post.id)
             delete_post = post.first()
             if delete_post == None:
@@ -91,7 +91,7 @@ async def deletePost(del_post : schema.deletePost, db: Session = Depends(get_db)
 # 
 @router.put('/updatepost/{id}', response_model=schema.postOut, status_code=status.HTTP_200_OK, tags=['Org_Posts'])
 async def updatePost(id: int, post: schema.post, db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
-    if current_user.user_type == 'organization':
+    if current_user.user_type.lower() == 'organization':
         find_post = db.query(models.Post).filter(models.Post.post_id == id)
         update_post = find_post.first()
 
@@ -114,7 +114,7 @@ async def updatePost(id: int, post: schema.post, db: Session = Depends(get_db), 
 
 @router.delete('/delete_all_posts', status_code=status.HTTP_201_CREATED, tags=['Org_Posts'])
 async def deleteAll(db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
-    if current_user.user_type == 'organization':
+    if current_user.user_type.lower() == 'organization':
         org = db.query(models.Organization).filter(models.Organization.user_id == current_user.user_id).first()
         
         # Delete all posts with the same organization ID

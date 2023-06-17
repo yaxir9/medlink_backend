@@ -32,6 +32,12 @@ class userOut(User):
         orm_mode = True
 
 
+class userOut_with_Token(userOut):
+    access_token : str
+    token_type : str
+    class Config:
+        orm_mode = True
+
     
 
 
