@@ -6,7 +6,7 @@ import traceback
 from typing import List
 
 router = APIRouter()
-@router.post('/addprofessional', response_model=schema.professionalOut, status_code=status.HTTP_200_OK, tags=['Professional'])
+@router.post('/addprofessional', response_model=schema.professionalOut, status_code=status.HTTP_201_CREATED, tags=['Professional'])
 async def addProfessional(professional : schema.professional, db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
     if current_user.user_type.lower() == 'nurse' or current_user.user_type.lower() == 'doctor':
         try:
@@ -16,6 +16,7 @@ async def addProfessional(professional : schema.professional, db: Session = Depe
             db.refresh(new_professional)
             return new_professional
         except Exception as e:
+            print(e)
             raise HTTPException(status_code=500, detail=str(e))
     
     else:
@@ -23,9 +24,11 @@ async def addProfessional(professional : schema.professional, db: Session = Depe
 
 # get professional
     # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@router.get('/professional/{id}', response_model=schema.professionalOut, status_code=status.HTTP_200_OK, tags=['Professional'])
-async def getProfessional(id: int, db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
-    professional = db.query(models.Professional).filter(models.Professional.professional_id == id).first()
+@router.get('/professional', response_model=schema.professionalOut, status_code=status.HTTP_200_OK, tags=['Professional'])
+async def getProfessional(db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
+    # print("this is current user: ",current_user)
+    # print("This is the current user ID:", current_user.user_id)
+    professional = db.query(models.Professional).filter(models.Professional.user_id == current_user.user_id).first()
     if not professional:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Professional with ID {id} does not exist")
     

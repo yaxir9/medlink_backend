@@ -72,11 +72,11 @@ async def delete_Organization(organization : schema.deleteOrganization, db  : Se
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You have no access to perform this action") 
 
 # get single organization
-@router.get('/single_organization/{id}', response_model=schema.organizationOut, status_code=status.HTTP_200_OK, tags=['Organization'])
-async def get_Organization(id: int, db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
+@router.get('/single_organization', response_model=schema.organizationOut, status_code=status.HTTP_200_OK, tags=['Organization'])
+async def get_Organization(db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
 
         if current_user.user_type == 'organization':
-            org = db.query(models.Organization).filter(models.Organization.organization_id == id).first()
+            org = db.query(models.Organization).filter(models.Organization.user_id == current_user.user_id).first()
             if not org:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Organization with ID {id} does not exist")
             

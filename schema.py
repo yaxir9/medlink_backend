@@ -75,12 +75,12 @@ class experienceInfo(experience):
 
 
 class professional(BaseModel):
-    gender : str 
-    intern_status : bool 
-    current_position : str 
-    address : str 
-    part_time : bool
-    registeration_no : str 
+    gender: str 
+    intern_status: bool 
+    current_position: str 
+    address: str 
+    part_time: bool
+    registeration_no: Optional[str] = None
 
 class professionalInfo(professional):
     professional_id : int 
@@ -156,7 +156,7 @@ class post(BaseModel):
 
 class postsInOrg(post):
     post_id : int 
-    date : datetime 
+    date : date 
     class Config:
         orm_mode = True
 
