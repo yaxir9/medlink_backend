@@ -224,7 +224,7 @@ class FollowersOut(Follow):
 
 
 class Patient(BaseModel):
-    name : str 
+    # name : str 
     address : str 
     phone_no : str 
 

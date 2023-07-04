@@ -9,8 +9,8 @@ from fastapi import Query
 
 router = APIRouter()
 #
-@router.post('/apply',   response_model=schema.ApplicationOut, status_code=status.HTTP_200_OK, tags=['Application'])
-async def addApplication(db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
+@router.post('/apply/{post_id}',   response_model=schema.ApplicationOut, status_code=status.HTTP_200_OK, tags=['Application'])
+async def addApplication(post_id: int, db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
     if current_user.user_type.lower() == 'nurse' or current_user.user_type.lower() == 'doctor':
         # try:
 
@@ -20,7 +20,7 @@ async def addApplication(db: Session = Depends(get_db), current_user: int = Depe
             print("post id : ",post.post_id)
             print("Professional user : ", professional.user_id)
             print("current user : ",current_user.user_id)
-            apply = {"post_id" : post.post_id, "professional_id" : professional.professional_id}
+            apply = {"post_id" : post_id, "professional_id" : professional.professional_id}
             new_apply = models.Application(**apply)
             db.add(new_apply)            
             db.commit()
@@ -131,17 +131,12 @@ async def getAllApplications(
             for qualification in professional.qualifications:
                 qualification_out = schema.qualificationInfo(
                     qualification_id=qualification.qualification_id,
-                    degree=qualification.degree,
-                    college=qualification.college,
-                    grade=qualification.grade,
-                    start_date=qualification.start_date,
-                    completion_date=qualification.completion_date
+                    qualification=qualification.qualification,
                 )
                 qualifications.append(qualification_out)
 
             professional_out = schema.professionalOut(
                 professional_id=professional.professional_id,
-                name=professional.name,
                 gender=professional.gender,
                 intern_status=professional.intern_status,
                 current_position=professional.current_position,
@@ -152,6 +147,7 @@ async def getAllApplications(
                 experience=professional.experience,
                 user=schema.userOut(
                         user_id=professional.user.user_id,
+                        name=professional.user.name,
                         email = professional.user.email,
                         user_type = professional.user.user_type
                         )

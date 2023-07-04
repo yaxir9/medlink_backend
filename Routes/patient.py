@@ -23,10 +23,11 @@ async def addPatient(patient : schema.Patient, db: Session = Depends(get_db), cu
     
 
 # allemployees
-@router.get('/patient/{id}', response_model=schema.PatientOut, status_code=status.HTTP_200_OK, tags=['Patient'])
-async def getPatient(id : int, db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
+@router.get('/patient', response_model=schema.PatientOut, status_code=status.HTTP_200_OK, tags=['Patient'])
+async def getPatient(db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
             try:
-                patient = db.query(models.Patient).filter(models.Patient.patient_id == id).first()
+                # patient = db.query(models.Patient).filter(models.Patient.patient_id == id).first()
+                patient = db.query(models.Patient).first()
                 return patient
 
             except Exception as e:
