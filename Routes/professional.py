@@ -71,7 +71,7 @@ async def deletePost(del_professional : schema.deletePost, db: Session = Depends
 
             delete_professional = professional.first()
             if delete_professional == None:
-                raise HTTPException(status_code= status.HTTP_404_NOT_FOUND , detail=f"Post with Id : {del_post.id} dose not exist")
+                raise HTTPException(status_code= status.HTTP_404_NOT_FOUND , detail=f"Post with Id : {del_professional.id} dose not exist")
 
         
             if delete_professional.user.user_id != current_user.user_id:

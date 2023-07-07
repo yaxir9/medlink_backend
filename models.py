@@ -39,6 +39,7 @@ class Professional(Base):
     current_position = Column(String, nullable=False)
     address = Column(String, nullable=False)
     part_time = Column(Boolean, nullable=False)
+    phone_no = Column(String, nullable=True)
 
     registeration_no = Column(String, nullable=True)
 

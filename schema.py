@@ -80,6 +80,7 @@ class professional(BaseModel):
     current_position: str 
     address: str 
     part_time: bool
+    phone_no: Optional[str] = None
     registeration_no: Optional[str] = None
 
 class professionalInfo(professional):
@@ -172,12 +173,22 @@ class postOut(post):
 class deletePost(BaseModel):
     id : int 
 
+class Follow(BaseModel):
+    organization_id : int 
 
+class FollowersOut(Follow):
+     
+    follow_id : int 
+    professional_id : int 
+    date : date 
+    class Config:
+        orm_mode=True 
 
 class organizationOut(organizationInfo):
 
     employees : List[employeesOut] 
-    posts : List[postsInOrg] 
+    posts : List[postsInOrg]
+    follower: List[FollowersOut]
     class Config:
         orm_mode = True
 
@@ -211,16 +222,6 @@ class ApplicationOut(Application):
         class Config:
             orm_mode = True 
 
-
-class Follow(BaseModel):
-    organization_id : int 
-
-class FollowersOut(Follow):
-    follow_id : int 
-    professional_id : int 
-    date : date 
-    class Config:
-        orm_mode=True 
 
 
 class Patient(BaseModel):

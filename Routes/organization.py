@@ -96,3 +96,33 @@ async def all_organizations(db: Session = Depends(get_db), current_user: int = D
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+#get followed organizations
+@router.get('/get_followed_organizations', response_model=List[schema.organizationOut], status_code=status.HTTP_200_OK, tags=['Organization'])
+async def get_followed_organizations(db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
+    try:
+        professional = db.query(models.Professional).filter(models.Professional.user_id == current_user.user_id).first()
+        if professional:
+            followed_organizations = db.query(models.Organization).join(models.Follow).filter(models.Follow.professional_id == professional.professional_id).all()
+            return followed_organizations
+        else:
+            raise HTTPException(status_code=404, detail="Professional not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get('/get_organizations', response_model=List[schema.organizationOut], status_code=status.HTTP_200_OK, tags=['Organization'])
+async def get_organizations(db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
+    try:
+        professional = db.query(models.Professional).filter(models.Professional.user_id == current_user.user_id).first()
+        if professional:
+            followed_organizations = db.query(models.Organization).join(models.Follow).filter(models.Follow.professional_id == professional.professional_id).all()
+
+            # Query organizations not followed by the user
+            not_followed_organizations = db.query(models.Organization).filter(~models.Organization.organization_id.in_([o.organization_id for o in followed_organizations])).all()
+
+            return not_followed_organizations
+        else:
+            raise HTTPException(status_code=404, detail="Professional not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
