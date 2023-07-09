@@ -74,16 +74,19 @@ async def delete_user(user : schema.delteUser, db : Session = Depends(get_db), c
 
 @router.post('/profileImage', status_code=status.HTTP_201_CREATED, tags=["UserImage"])
 async def add_image( file: UploadFile = File(...), db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
+    print("File: ", file)
     try:
         if not file.content_type.startswith('image/'):
             raise HTTPException(status_code=400, detail="Only image files are allowed.")
-
+        
         save_path = Path('static') / 'user'
         save_path.mkdir(parents=True, exist_ok=True)
-
+        print("filename: ", file.filename)
         file_path = save_path / f"{current_user.user_id}.{file.filename.split('.')[-1]}"
         with file_path.open('wb') as buffer:
             buffer.write(await file.read())
+
+        print(file_path)
 
         image = models.UserImage(path=str(file_path), user_id=current_user.user_id)
         db.add(image)
@@ -92,6 +95,7 @@ async def add_image( file: UploadFile = File(...), db: Session = Depends(get_db)
 
         return {"path": str(file_path)}
     except Exception as e:
+        print("Error: ", e)
         raise HTTPException(status_code=500, detail=str(e))
 
 
