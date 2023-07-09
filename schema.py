@@ -45,11 +45,11 @@ class delteUser(BaseModel):
     id : int
 
 class qualification(BaseModel):
-    # degree : str 
-    # college : str 
-    # grade : str 
-    # start_date : date
-    # completion_date : date
+    degree : str 
+    college : str 
+    grade : str 
+    start_date : date
+    completion_date : date
     qualification : str 
 
 class qualificationInfo(qualification):
@@ -60,11 +60,11 @@ class qualificationInfo(qualification):
 
 
 class experience(BaseModel):
-    # company : str 
-    # role : str 
-    # description : str 
-    # start_date : date
-    # end_date : date
+    company : str 
+    role : str 
+    description : str 
+    start_date : date
+    end_date : date
     experience : str 
 
 class experienceInfo(experience):
@@ -85,6 +85,8 @@ class professional(BaseModel):
 
 class professionalInfo(professional):
     professional_id : int 
+    user: userOut
+
     class Config:
         orm_mode = True
 
@@ -111,7 +113,6 @@ class ReviewsOut(Reviews):
         orm_mode = True 
 
 class professionalOut(professionalInfo):
-    user: userOut
     qualification: List[qualificationInfo] = []
     experience: List[experienceInfo] = []
     reviews : List[ReviewsOut] = []

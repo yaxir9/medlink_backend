@@ -57,8 +57,8 @@ async def deleteExperience(delexperience: schema.employeesDelete, db: Session = 
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You have no access to perform this action")
 
 # update employee data
-@router.put('/update_experience/{id}', response_model=schema.qualificationOut, status_code=status.HTTP_200_OK, tags=['Experience'])
-async def editExperience(id : int, experience: schema.experience, db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
+@router.put('/update_experience/{id}', response_model=schema.experienceOut, status_code=status.HTTP_200_OK, tags=['Experience'])
+async def editExperience(id: int, experience: schema.experience, db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
     if current_user.user_type.lower() == 'nurse' or current_user.user_type.lower() == 'doctor':        
 
         find_experience = db.query(models.Experience).filter(models.Experience.experience_id == id)

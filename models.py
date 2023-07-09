@@ -66,11 +66,11 @@ class Patient(Base):
 class Qualification(Base):
     __tablename__ = 'qualification'
     qualification_id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    # degree = Column(String, nullable=False)
-    # college = Column(String, nullable=False)
-    # grade = Column(String, nullable=False)
-    # start_date = Column(Date, nullable=False)
-    # completion_date = Column(Date, nullable=False)
+    degree = Column(String, nullable=False)
+    college = Column(String, nullable=False)
+    grade = Column(String, nullable=False)
+    start_date = Column(Date, nullable=False)
+    completion_date = Column(Date, nullable=False)
     
     qualification = Column(String, nullable=False)
 
@@ -80,11 +80,11 @@ class Qualification(Base):
 class Experience(Base):
     __tablename__='experience'
     experience_id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    # company = Column(String, nullable=False)
-    # role = Column(String, nullable=False)
-    # description = Column(String, nullable=False)
-    # start_date = Column(Date, nullable=False)
-    # end_date = Column(Date, nullable=False)
+    company = Column(String, nullable=False)
+    role = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    start_date = Column(Date, nullable=False)
+    end_date = Column(Date, nullable=False)
     experience = Column(String, nullable=False)
     professional_id = Column(Integer, ForeignKey('professionals.professional_id'), nullable=False)
     professional = relationship("Professional", back_populates="experience")

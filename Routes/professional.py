@@ -122,39 +122,39 @@ async def getAllProfessional(db: Session = Depends(get_db), current_user: int = 
 
     if not professionals:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Database is empty")
+    return professionals
+    # professional_out_list = []
+    # for professional in professionals:
+    #     user_image = db.query(models.UserImage).filter(models.UserImage.user_id == professional.user.user_id).first()
 
-    professional_out_list = []
-    for professional in professionals:
-        user_image = db.query(models.UserImage).filter(models.UserImage.user_id == professional.user.user_id).first()
+    #     # Fetch qualifications data
+    #     qualifications = db.query(models.Qualification).filter(models.Qualification.professional_id == professional.professional_id).all()
 
-        # Fetch qualifications data
-        qualifications = db.query(models.Qualification).filter(models.Qualification.professional_id == professional.professional_id).all()
+    #     # Fetch experiences data
+    #     experiences = db.query(models.Experience).filter(models.Experience.professional_id == professional.professional_id).all()
 
-        # Fetch experiences data
-        experiences = db.query(models.Experience).filter(models.Experience.professional_id == professional.professional_id).all()
+    #     # Fetch reviews data
+    #     reviews = db.query(models.Reviews).filter(models.Reviews.professional_id == professional.professional_id).all()
 
-        # Fetch reviews data
-        reviews = db.query(models.Reviews).filter(models.Reviews.professional_id == professional.professional_id).all()
+    #     # Create instances of the corresponding Pydantic models
+    #     user_image_data = None if not user_image else schema.userImageOut(**user_image.__dict__)
 
-        # Create instances of the corresponding Pydantic models
-        user_image_data = None if not user_image else schema.userImageOut(**user_image.__dict__)
+    #     qualifications_data = [schema.qualificationInfo(**qualification.__dict__) for qualification in qualifications]
+    #     experiences_data = [schema.experienceInfo(**experience.__dict__) for experience in experiences]
+    #     reviews_data = [schema.ReviewsOut(**review.__dict__) for review in reviews]
 
-        qualifications_data = [schema.qualificationInfo(**qualification.__dict__) for qualification in qualifications]
-        experiences_data = [schema.experienceInfo(**experience.__dict__) for experience in experiences]
-        reviews_data = [schema.ReviewsOut(**review.__dict__) for review in reviews]
+    #     # Create the response data using the professionalOut schema
+    #     professional_data = schema.professionalInfo(**professional.__dict__)
+    #     professional_out_data = schema.professionalOut(
+    #         **professional_data.__dict__,
+    #         user=schema.userOut(**professional.user.__dict__, userImage=user_image_data),
+    #         qualification=qualifications_data,
+    #         experience=experiences_data,
+    #         reviews=reviews_data
+    #     )
+    #     professional_out_list.append(professional_out_data)
 
-        # Create the response data using the professionalOut schema
-        professional_data = schema.professionalInfo(**professional.__dict__)
-        professional_out_data = schema.professionalOut(
-            **professional_data.__dict__,
-            user=schema.userOut(**professional.user.__dict__, userImage=user_image_data),
-            qualification=qualifications_data,
-            experience=experiences_data,
-            reviews=reviews_data
-        )
-        professional_out_list.append(professional_out_data)
-
-    return professional_out_list
+    # return professional_out_list
 
     # except Exception as e:
         # raise HTTPException(status_code=500, detail=str(e))
