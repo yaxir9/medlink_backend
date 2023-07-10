@@ -45,7 +45,7 @@ async def deleteExperience(delexperience: schema.employeesDelete, db: Session = 
         experience =  db.query(models.Experience).filter(models.Experience.experience_id == delexperience.id)
         delete_experience = experience.first()
         if delete_experience is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Experience with Id: {delEmployee.id} does not exist")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Experience with Id: {delexperience.id} does not exist")
 
         if delete_experience.professional.user_id != current_user.user_id:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to perform this action")

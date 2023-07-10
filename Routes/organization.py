@@ -78,7 +78,8 @@ async def get_Organization(db: Session = Depends(get_db), current_user: int = De
         if current_user.user_type == 'organization':
             org = db.query(models.Organization).filter(models.Organization.user_id == current_user.user_id).first()
             if not org:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Organization with ID {id} does not exist")
+                return []
+                # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Organization with ID {id} does not exist")
             
         else:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You can't access this information")
@@ -107,7 +108,8 @@ async def get_followed_organizations(db: Session = Depends(get_db), current_user
             followed_organizations = db.query(models.Organization).join(models.Follow).filter(models.Follow.professional_id == professional.professional_id).all()
             return followed_organizations
         else:
-            raise HTTPException(status_code=404, detail="Professional not found")
+            return []
+            # raise HTTPException(status_code=404, detail="Professional not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -123,6 +125,6 @@ async def get_organizations(db: Session = Depends(get_db), current_user: int = D
 
             return not_followed_organizations
         else:
-            raise HTTPException(status_code=404, detail="Professional not found")
+            raise HTTPException(status_code=status.HTTP_200_OK, detail="Professional not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

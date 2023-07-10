@@ -6,16 +6,13 @@ from sqlalchemy import pool
 from alembic import context
 from models import Base
 from db import get_db
-from config import setting 
+from config import setting
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-
-# DATABASE_URL = 'postgresql://postgres:uzair@localhost/midilink'
 DATABASE_URL = f'postgresql://{setting.database_username}:{setting.database_password}@{setting.database_hostname}:{setting.database_port}/{setting.database_name}'
 config.set_main_option("sqlalchemy.url",DATABASE_URL)
-
-
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:

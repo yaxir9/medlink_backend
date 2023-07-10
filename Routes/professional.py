@@ -30,7 +30,8 @@ async def getProfessional(db: Session = Depends(get_db), current_user: int = Dep
     # print("This is the current user ID:", current_user.user_id)
     professional = db.query(models.Professional).filter(models.Professional.user_id == current_user.user_id).first()
     if not professional:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Professional with ID {id} does not exist")
+         
+         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Professional with ID {id} does not exist")
     return professional
     # # Fetch user image data
     # user_image = db.query(models.UserImage).filter(models.UserImage.user_id == professional.user.user_id).first()
@@ -60,7 +61,7 @@ async def getProfessional(db: Session = Depends(get_db), current_user: int = Dep
     #     reviews=reviews_data
     # )
     
-    return professional_out_data
+    # return professional_out_data
 
 
 # delete post
@@ -119,7 +120,8 @@ async def getAllProfessional(db: Session = Depends(get_db), current_user: int = 
     professionals = db.query(models.Professional).all()
 
     if not professionals:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Database is empty")
+         return []
+        # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Database is empty")
     return professionals
     # professional_out_list = []
     # for professional in professionals:

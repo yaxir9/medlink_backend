@@ -45,7 +45,7 @@ async def deleteQualification(delqualification: schema.employeesDelete, db: Sess
         qualification =  db.query(models.Qualification).filter(models.Qualification.qualification_id == delqualification.id)
         delete_qualification = qualification.first()
         if delete_qualification is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Employee with Id: {delEmployee.id} does not exist")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Employee with Id: {delqualification.id} does not exist")
 
         if delete_qualification.professional.user_id != current_user.user_id:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to perform this action")

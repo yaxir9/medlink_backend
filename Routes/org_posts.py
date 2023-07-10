@@ -34,7 +34,8 @@ async def getPost(id : int,  db: Session = Depends(get_db), current_user: int = 
         post = db.query(models.Post).filter(models.Post.post_id == id).first()
 
         if not post:
-            raise HTTPException(status_code= status.HTTP_404_NOT_FOUND , detail= f"post at this {id} dose not exist")
+            return []
+            # raise HTTPException(status_code= status.HTTP_200_OK , detail= f"post at this {id} dose not exist")
         
         return post 
     else:
@@ -49,7 +50,7 @@ async def orgPosts(db: Session = Depends(get_db), current_user: int = Depends(Oa
         if org:
             posts = db.query(models.Post).filter(models.Post.organization_id == org.organization_id).all()
             if not posts:
-                raise HTTPException(status_code= status.HTTP_404_NOT_FOUND , detail= f"post at this {id} dose not exist")
+                raise HTTPException(status_code= status.HTTP_200_OK , detail= f"post at this {id} dose not exist")
             return posts 
     # else:
         # raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You have no access to perform this action")
@@ -58,9 +59,12 @@ async def orgPosts(db: Session = Depends(get_db), current_user: int = Depends(Oa
 async def getAllPosts(db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):
     if current_user.user_type.lower() == 'nurse' or current_user.user_type.lower() == 'doctor':
     
-        posts = db.query(models.Post).all()
+        # posts = db.query(models.Post).all()
+        followed_org_ids = [followed.organization_id for followed in current_user.professional.followed]
+        posts = db.query(models.Post).filter(models.Post.organization_id.in_(followed_org_ids)).all()
         if not posts:
-            raise HTTPException(status_code= status.HTTP_404_NOT_FOUND , detail= f"There is not posts avalible in database")
+            return []
+            # raise HTTPException(status_code= status.HTTP_404_NOT_FOUND , detail= f"There is not posts avalible in database")
         return posts
 
     else:

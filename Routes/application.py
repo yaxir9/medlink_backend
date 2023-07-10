@@ -113,56 +113,72 @@ async def getPost(id : int,  db: Session = Depends(get_db), current_user: int = 
 
 
 
+# @router.get('/applies/{post_id}', response_model=List[schema.ApplicationOut], status_code=status.HTTP_200_OK, tags=['Application'])
+# async def getAllApplications(
+#     post_id: int,
+#     db: Session = Depends(get_db),
+#     current_user: int = Depends(Oauth2.get_current_user)
+# ):
+#     if current_user.user_type.lower() == 'organization':
+#         applications = db.query(models.Application).filter_by(post_id=post_id).all()
+#         if not applications:
+#             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No Applications")
+
+#         application_out_list = []
+#         for application in applications:
+#             professional = application.professional
+#             qualifications = []
+#             for qualification in professional.qualifications:
+#                 qualification_out = schema.qualificationInfo(
+#                     qualification_id=qualification.qualification_id,
+#                     qualification=qualification.qualification,
+#                 )
+#                 qualifications.append(qualification_out)
+
+#             professional_out = schema.professionalOut(
+#                 professional_id=professional.professional_id,
+#                 gender=professional.gender,
+#                 intern_status=professional.intern_status,
+#                 current_position=professional.current_position,
+#                 address=professional.address,
+#                 part_time=professional.part_time,
+#                 registeration_no=professional.registeration_no,
+#                 qualification=qualifications,
+#                 experience=professional.experience,
+#                 user=schema.userOut(
+#                         user_id=professional.user.user_id,
+#                         name=professional.user.name,
+#                         email = professional.user.email,
+#                         user_type = professional.user.user_type
+#                         )
+#             )
+
+#             application_out = schema.ApplicationOut(
+#                 application_id = application.application_id,
+#                 post_id = application.post_id,
+#                 professional_id = application.professional_id,
+#                 date=application.date,
+#                 professional=professional_out
+#             )
+#             application_out_list.append(application_out)
+
+#         return application_out_list
+
+#     else:
+#         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You have no access to perform this action")
+
 @router.get('/applies/{post_id}', response_model=List[schema.ApplicationOut], status_code=status.HTTP_200_OK, tags=['Application'])
-async def getAllApplications(
-    post_id: int,
-    db: Session = Depends(get_db),
-    current_user: int = Depends(Oauth2.get_current_user)
-):
-    if current_user.user_type.lower() == 'organization':
-        applications = db.query(models.Application).filter_by(post_id=post_id).all()
+async def getAllApplications(post_id: int, db: Session = Depends(get_db), current_user: int = Depends(Oauth2.get_current_user)):  
+    post = db.query(models.Post).filter(models.Post.post_id == post_id).first()
+    if current_user.user_type.lower() == 'organization' and post.organization.user.user_id == current_user.user_id:
+        if not post:
+            raise HTTPException( status_code=status.HTTP_200_OK, detail="Post with this id does not exist")
+        applications = db.query(models.Application).filter(models.Application.post_id==post_id).all()
+
         if not applications:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No Applications")
-
-        application_out_list = []
-        for application in applications:
-            professional = application.professional
-            qualifications = []
-            for qualification in professional.qualifications:
-                qualification_out = schema.qualificationInfo(
-                    qualification_id=qualification.qualification_id,
-                    qualification=qualification.qualification,
-                )
-                qualifications.append(qualification_out)
-
-            professional_out = schema.professionalOut(
-                professional_id=professional.professional_id,
-                gender=professional.gender,
-                intern_status=professional.intern_status,
-                current_position=professional.current_position,
-                address=professional.address,
-                part_time=professional.part_time,
-                registeration_no=professional.registeration_no,
-                qualification=qualifications,
-                experience=professional.experience,
-                user=schema.userOut(
-                        user_id=professional.user.user_id,
-                        name=professional.user.name,
-                        email = professional.user.email,
-                        user_type = professional.user.user_type
-                        )
-            )
-
-            application_out = schema.ApplicationOut(
-                application_id = application.application_id,
-                post_id = application.post_id,
-                professional_id = application.professional_id,
-                date=application.date,
-                professional=professional_out
-            )
-            application_out_list.append(application_out)
-
-        return application_out_list
-
+                    # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No Applications")
+            return []
+        return applications
+  
     else:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You have no access to perform this action")
