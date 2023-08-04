@@ -19,7 +19,7 @@ app.add_middleware(
 
 @app.get('/')
 def Hello():
-    return {"Message" : "Hello World"}
+    return {"Message" : "Hello Python"}
 
 # git commit -m "update experience and qualification models v2"
 
